@@ -30,7 +30,7 @@ def refresh_ah_api():
     global ah_api
     global ah_api_p
     global init_api
-    ah_api = sorted([c for c in requests.get('https://arkhamdb.com/api/public/cards?encounter=1').json()],
+    ah_api = sorted([c for c in requests.get('https://es.arkhamdb.com/api/public/cards?encounter=1').json()],
                         key=lambda card: card['name'])
 
         # only player cards
@@ -47,13 +47,13 @@ def sort_cards(self, cards):
 
 @bot.command(name='ahhelp', aliases=['arkhamhelp'])
 async def ahhelp(ctx):
-    m_response = "Are you sure you want to know? There is no going back:\n"
-    m_response += "!ah [name] - Search for a player card\n"
-    m_response += "!ahe [name] - Encounter card front search\n"
-    m_response += "!ahb [name] - Search for card backsides. This includes encounter cards\n"
-    m_response += "!ahX [name] - Player card search with level X\n"
-    m_response += "!aha [name] - Search through all cards and post up to 5\n"
-    m_response += "You will have to forgive me, I'm still getting things in order. Expect some astounding revelations soon!"
+    m_response = "¿Seguro que quieres saberlo? No hay vuelta atrás:\n"
+    m_response += "!ah [nombre] - Busca una carta de jugador.\n"
+    m_response += "!ahe [nombre] - Busca una carta de Encuentro.\n"
+    m_response += "!ahb [nombre] - Busca la cara trasera de una carta. Incluye las cartas de Encuentro.\n"
+    m_response += "!ahX [nombre] - Busca una carta de jugador de nivel X.\n"
+    m_response += "!aha [nombre] - Busca entre todas las cartas y sube hasta 5.\n"
+    m_response += "Me tendrás que perdonar, pero todavía estoy ordenando mis cosas. Quizá en un futuro haré más cosas."
 
     await ctx.send(m_response[:2000])
 
@@ -77,14 +77,14 @@ async def ah(ctx, string):
             m_response = query_redirects[m_query]
         elif not m_query:
             # post help text if no query
-            m_response = "!ah [name] - Player card search\n"
-            m_response += "!ahe [name] - Encounter card search\n"
-            m_response += "!ahb [name] - Search for card backsides\n"
-            m_response += "!ahX [name] - Player card search with level X\n"
-            m_response += "!aha [name] - Search through all cards and post up to 5\n"
-            m_response += "!ahfaq [name] - Search through all cards and post the FAQ\n"
-            m_response += "All !ah commands also allow a [name]~[subname] format, for cards where two or more options exist\n"
-            m_response += "!ahfaq, !ahefaq, and !ahfaqX will get you the faq for the corresponding card\n"
+            m_response = "!ah [nombre] - Busca una carta de jugador\n"
+            m_response += "!ahe [nombre] - Busca una carta de Encuentro\n"
+            m_response += "!ahb [nombre] - Busca la cara trasera de una carta\n"
+            m_response += "!ahX [nombre] - Busca una carta de jugador de nivel X\n"
+            m_response += "!aha [nombre] - Busca entre todas las cartas y postea hasta 5\n"
+            m_response += "!ahfaq [nombre] - Busca entre todas las cartas y postea las FAQ\n"
+            m_response += "Todos los comandos !ah permiten también una búsqueda en formato [nombre]~[subtítulo], para cartas donde 2 o más opciones existen\n"
+            m_response += "!ahfaq, !ahefaq, y !ahfaqX mostrarán las FAQ de la carta en cuestión\n"
         else:
             # Otherwise find and handle card names
             if not init_api:
@@ -154,22 +154,22 @@ async def ah(ctx, string):
                 except KeyError as e:
                     if e.args[0] == "imagesrc":
                         # if no image on ArkhamDB
-                        m_response = "'{}' has no image on ArkhamDB:\n".format(m_cards[0]['name'])
-                        m_response += "https://arkhamdb.com/card/" + m_cards[0]["code"]
+                        m_response = "'{}' no tiene imagen en ArkhamDB:\n".format(m_cards[0]['name'])
+                        m_response += "https://es.arkhamdb.com/card/" + m_cards[0]["code"]
             elif len(m_cards) == 0:
-                m_response += "Sorry, I cannot seem to find any card with these parameters:\n"
-                m_response += "http://arkhamdb.com/find/?q=" + m_query.replace(" ", "+")
+                m_response += "Disculpa, no encuentro ninguna carta con esos parámetros:\n"
+                m_response += "http://es.arkhamdb.com/find/?q=" + m_query.replace(" ", "+")
             else:
                 if ctx.invoked_with == "aha":
                     # post up to 5 images with !aha command
                     for i, card in enumerate(m_cards[:5]):
-                        m_response += "http://arkhamdb.com{0}\n".format(card[img])
+                        m_response += "http://es.arkhamdb.com{0}\n".format(card[img])
                     if len(m_cards) > 5:
                         m_response += "[{0}/{1}]".format(5, len(m_cards))
                 else:
                     # else just post a link
-                    m_response = "'{}' matching cards found:\n".format(len(m_cards))
-                    m_response += "https://arkhamdb.com/find?q=" + m_query.replace(" ", "+")
+                    m_response = "'{}' cartas encontradas:\n".format(len(m_cards))
+                    m_response += "https://es.arkhamdb.com/find?q=" + m_query.replace(" ", "+")
         if (ctx.invoked_with.__contains__("faq") and faq_response != None) :
             for strin in faq_response:
                 await ctx.send(strin[:2000])
@@ -177,4 +177,3 @@ async def ah(ctx, string):
             await ctx.send(m_response[:2000])
 
 bot.run(TOKEN)
-
